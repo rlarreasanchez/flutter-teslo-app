@@ -3,7 +3,6 @@ import 'package:formz/formz.dart';
 import 'package:teslo_shop/features/auth/providers/auth_provider.dart';
 import 'package:teslo_shop/features/shared/shared.dart';
 
-//! 3 - StateNotifierProvider - consume afuera
 final loginFormProvider =
     StateNotifierProvider.autoDispose<LoginFormNotifier, LoginFormState>((ref) {
   final loginUserCallback = ref.watch(authProvider.notifier).loginUser;
@@ -11,7 +10,6 @@ final loginFormProvider =
   return LoginFormNotifier(loginUserCallback: loginUserCallback);
 });
 
-//! 2 - Como implementamos un notifier
 class LoginFormNotifier extends StateNotifier<LoginFormState> {
   final Function(String, String) loginUserCallback;
 
@@ -40,7 +38,9 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
 
     if (!state.isValid) return;
 
+    state = state.copyWith(isPosting: true);
     await loginUserCallback(state.email.value, state.password.value);
+    state = state.copyWith(isPosting: false);
   }
 
   _touchEveryField() {
@@ -56,7 +56,6 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
   }
 }
 
-//! 1 - State del provider
 class LoginFormState {
   final bool isPosting;
   final bool isFormPosted;
